@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arsip Live Class - UMT</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        /* CSS TIDAK BERUBAH BANYAK, HANYA PENAMBAHAN GAYA UNTUK PESAN 'TIDAK DITEMUKAN' */
+        :root {
+            --bg-dark-primary: #121212;
+            --bg-dark-secondary: #141414;
+            --bg-card: #2a2a2a;
+            --text-primary: #ffffff;
+            --text-secondary: #b3b3b3;
+            --color-blue: #3d8bfd;
+            --color-green: #28a745;
+            --border-color: #444444;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-dark-secondary);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .main-container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 0;
+        }
+
+        .content-wrapper {
+             padding: 0 40px;
+        }
+
+        .breadcrumbs {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .breadcrumbs a { color: var(--text-secondary); text-decoration: none; transition: color 0.3s ease; }
+        .breadcrumbs a:hover { color: var(--text-primary); }
+
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin: 40px 0 30px 0;
+        }
+        
+        hr.section-divider {
+            border: none;
+            border-top: 1px solid var(--border-color);
+            margin: 40px 0;
+        }
+
+        .search-bar {
+            position: relative;
+            margin-bottom: 40px;
+        }
+        
+        .search-bar input {
+            width: 100%;
+            padding: 15px 20px 15px 50px;
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 30px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .search-bar input:focus { border-color: var(--color-blue); }
+
+        .search-bar .search-icon {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+        }
+
+        .card-grid {
+            display: flex;
+            overflow-x: auto;
+            gap: 25px;
+            padding: 10px 40px;
+            margin: 0 -40px;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        .card-grid::-webkit-scrollbar { display: none; }
+        
+        .card-link {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            flex: 0 0 300px;
+        }
+
+        .card {
+            background-color: var(--bg-card);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+        }
+        
+        .card-thumbnail {
+            background-color: #333;
+            width: 100%;
+            height: 160px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: var(--text-secondary);
+        }
+
+        .card-content { padding: 20px; flex-grow: 1; display: flex; flex-direction: column; }
+        .card-title { font-size: 1.2rem; font-weight: 600; margin-bottom: 8px; color: var(--text-primary); }
+        .card-subtitle { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 15px; flex-grow: 1; }
+        .card-meta { display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; color: var(--text-secondary); }
+
+        .tag { padding: 5px 12px; border-radius: 15px; font-size: 0.75rem; font-weight: 600; }
+        .tag-video { background-color: var(--color-blue); color: white; }
+        .tag-materi { background-color: var(--color-green); color: white; }
+
+        /* GAYA BARU UNTUK PESAN 'TIDAK DITEMUKAN' */
+        .no-results {
+            display: none; /* Sembunyikan secara default */
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 50px;
+            text-align: center;
+            color: var(--text-secondary);
+        }
+        .no-results i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+        .no-results p {
+            font-size: 1.5rem;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+        .no-results span {
+            font-size: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .content-wrapper { padding: 0 20px; }
+            .card-grid { padding: 10px 20px; margin: 0 -20px; }
+            .card-link { flex-basis: 260px; }
+        }
+        @media (max-width: 480px) {
+            .content-wrapper { padding: 0 20px; }
+            .card-grid { padding: 10px 60px; margin: 0 -20px; }
+            .card-link { flex-basis: 260px; }
+        }
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            color: #888;
+        }
+
+        .breadcrumb-link {
+            color: #888;
+            text-decoration: none;
+            transition: color 0.3s ease;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .breadcrumb-link:hover {
+            color: white;
+        }
+        .breadcrumb-arrow {
+            color: #666;
+            font-size: 14px;
+        }
+        .breadcrumb-current {
+            color: white;
+            font-weight: 500;
+        }
+
+        /* Dropdown Styles */
+        /* .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-toggle {
+            color: var(--text-primary);
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 6px;
+            transition: var(--transition);
+            background: rgba(74, 144, 226, 0.1);
+        } */
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-toggle {
+            color: white;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 0;
+            transition: color 0.3s ease;
+            font-size: 14px;
+        }
+
+        .dropdown-toggle:hover {
+            color: #007bff;
+        }
+
+        .dropdown-arrow {
+            font-size: 12px;
+            transition: transform 0.3s ease;
+        }
+
+        .dropdown.active .dropdown-arrow {
+            transform: rotate(180deg);
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: #2a2a2a;
+            border: 1px solid #444;
+            border-radius: 8px;
+            min-width: 200px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .dropdown.active .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-item {
+            display: block;
+            padding: 12px 16px;
+            color: #ccc;
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid #333;
+        }
+
+        .dropdown-item:last-child {
+            border-bottom: none;
+            border-radius: 0 0 8px 8px;
+        }
+
+        .dropdown-item:first-child {
+            border-radius: 8px 8px 0 0;
+        }
+
+        .dropdown-item:hover {
+            background: #007bff;
+            color: white;
+        }
+        .content-wrapper h1{
+            margin-bottom: 35px;
+        }
+        .card-thumbnail {
+            /* 1. Hapus background-color solid, tambahkan properti untuk gambar */
+            background-size: cover;
+            background-position: center;
+            width: 100%;
+            height: 160px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            
+            /* 2. Jadikan sebagai 'induk' untuk lapisan overlay */
+            position: relative; 
+            color: var(--text-secondary); /* Tetap sebagai fallback color */
+        }
+
+        /* 3. Buat lapisan gelap (overlay) agar ikon selalu terlihat jelas */
+        .card-thumbnail::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.45); /* Lapisan hitam 45% transparan */
+            z-index: 1; /* Posisikan overlay di atas gambar */
+            transition: background-color 0.3s ease;
+        }
+
+        .card:hover .card-thumbnail::before {
+            background-color: rgba(0, 0, 0, 0.25); /* Overlay menjadi lebih terang saat disentuh */
+        }
+
+        /* 4. Posisikan ikon di lapisan paling atas */
+        .card-thumbnail i {
+            font-size: 3rem;
+            position: relative; /* Wajib agar z-index berfungsi */
+            z-index: 2; /* Posisikan ikon di atas overlay */
+            color: rgba(255, 255, 255, 0.9); /* Ubah warna ikon agar lebih cerah */
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.6); /* Tambahkan bayangan agar ikon menonjol */
+        }
+                                                footer {
+    background-color: #141414;
+    color: white;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    width: 100%;
+    box-sizing: border-box;
+    position: relative;
+    overflow: hidden;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+footer::before {
+    content: '';
+    position: absolute;
+    top: -20px;
+    left: 0;
+    width: 100%;
+    height: 20px;
+    background: linear-gradient(to bottom, rgba(28, 28, 28, 1) 0%, rgba(28, 28, 28, 0) 100%);
+}
+
+.footer-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    align-items: center;
+    margin: 20px;
+}
+
+.footer-section {
+    flex: 1;
+    min-width: 250px;
+    
+    justify-content: center;
+}
+
+.footer-section h3 {
+    color: white;
+    margin-bottom: 10px;
+    font-size: 18px;
+}
+
+.footer-section ul {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-section ul li {
+    margin-bottom: 8px;
+}
+
+.footer-section ul li a {
+    text-decoration: none;
+    color: #bbb;
+    transition: color 0.3s;
+    font-size: 14px;
+}
+
+.footer-section ul li a:hover {
+    color: white;
+}
+
+.contact-list img {
+    width: 16px;
+    vertical-align: middle;
+    margin-right: 8px;
+}
+
+.footer-bottom {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid #444;
+    margin-top: 20px;
+    padding-top: 10px;
+}
+
+.social-icons {
+    display: flex;
+    gap: 10px;
+}
+
+.social-icons a img {
+    width: 24px;
+    transition: opacity 0.3s;
+}
+
+.social-icons a img:hover {
+    opacity: 0.7;
+}
+
+/* Agar footer tetap responsif di layar kecil */
+@media (max-width: 768px) {
+    .footer-container {
+        flex-direction: column;
+        text-align: center;
+    }
+    .footer-bottom {
+        flex-direction: column;
+        text-align: center;
+        gap: 10px;
+    }
+
+    </style>
+</head>
+<body>
+
+    <div class="main-container">
+        <div class="content-wrapper">
+                    <nav class="breadcrumb">
+                        <a href="https://www.umt6174.site/" class="breadcrumb-link" target="_blank">Home</a>
+                        <span class="breadcrumb-arrow">›</span>
+                        <div class="dropdown" id="umtDropdown">
+                            <span class="dropdown-toggle">
+                                Arsip Live Class
+                                <span class="dropdown-arrow">▼</span>
+                            </span>
+                            <div class="dropdown-menu">
+                                <a href="https://www.umt6174.site/" class="dropdown-item" target="_blank">Home</a>
+                                <a href="https://www.umt6174.site/umt-lab" class="dropdown-item" target="_blank">UMT Lab</a>
+                                <a href="https://www.umt6174.site/materi-belajar" class="dropdown-item" target="_blank">Materi Pembelajaran</a>
+                                <a href="https://www.umt6174.site/video-pembelajaran" class="dropdown-item" target="_blank">Video Pembelajaran</a>
+                                <a href="https://www.umt6174.site/tryout" class="dropdown-item" target="_blank">Tryout</a>
+                                <a href="https://www.umt6174.site/perpustakaan" class="dropdown-item" target="_blank">Perpustakaan</a>
+                                <a href="https://www.umt6174.site/bank-soal" class="dropdown-item" target="_blank">Bank Soal UMT</a>
+                                <a href="https://www.umt6174.site/tanya-umt" class="dropdown-item" target="_blank">TanyaUMT</a>
+                                <a href="https://www.umt6174.site/arsip-live-class" class="dropdown-item" target="_blank">Arsip Live Class</a>
+                                <a href="https://www.umt6174.site/forum-belajar-umt" class="dropdown-item" target="_blank">Forum Belajar UMT</a>
+                                <a href="https://www.umt6174.site/tanya-umt" class="dropdown-item" target="_blank">Tanya UMT</a>
+                            </div>
+                        </div>
+                    </nav>
+                    <h1>Arsip Live Class</h1>
+            <div class="search-bar">
+                <i class="fa fa-search search-icon"></i>
+                <input type="text" id="search-input" placeholder="Cari video atau materi di arsip...">
+            </div>
+        </div>
+
+        <div id="no-results" class="no-results">
+            <i class="fas fa-search"></i>
+            <p>Hasil tidak ditemukan</p>
+            <span>Coba gunakan kata kunci lain untuk mencari di arsip.</span>
+        </div>
+
+        <section id="arsip-live-class">
+            <div class="content-wrapper">
+                <h2 class="section-title">Arsip Sesi Live Class</h2>
+            </div>
+            <div class="card-grid">
+                <a href="#" target="_blank" class="card-link">
+                    <div class="card">
+                        <div class="card-thumbnail" style="background-image: url('');">
+                            <i class="fas fa-video"></i>
+                        </div>
+                        <div class="card-content">
+                            <h3 class="card-title">Coming Soon</h3>
+                            <p class="card-subtitle"></p>
+
+                            <div class="card-meta">
+                                <span><i class="fas fa-calendar-days"></i> 15 Juli 2025</span>
+                                <span class="tag tag-video">VIDEO</span>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+                <!-- <a href="#" target="_blank" class="card-link">
+                    <div class="card">
+                        <div class="card-thumbnail" style="background-image: url('https://images.unsplash.com/photo-1516321497487-e288fb19713f?w=500&q=80');">
+                            <i class="fas fa-video"></i>
+                        </div>
+                        <div class="card-content">
+                            <h3 class="card-title">Coming Soon</h3>
+                            <p class="card-subtitle"></p>
+
+                            <div class="card-meta">
+                                <span><i class="fas fa-calendar-days"></i> 15 Juli 2025</span>
+                                <span class="tag tag-video">VIDEO</span>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+                <a href="#" target="_blank" class="card-link">
+                    <div class="card">
+                        <div class="card-thumbnail" style="background-image: url('https://images.unsplash.com/photo-1516321497487-e288fb19713f?w=500&q=80');">
+                            <i class="fas fa-video"></i>
+                        </div>
+                        <div class="card-content">
+                            <h3 class="card-title">Pembahasan Tryout UTBK 2025 #3</h3>
+                            <p class="card-subtitle">Fokus pada sub-tes Pengetahuan Kuantitatif dan Penalaran Matematika.</p>
+
+                            <div class="card-meta">
+                                <span><i class="fas fa-calendar-days"></i> 15 Juli 2025</span>
+                                <span class="tag tag-video">VIDEO</span>
+                            </div>
+                        </div>
+                    </div>
+                </a> -->
+            </div>
+        </section>
+
+        <div class="content-wrapper">
+            <hr class="section-divider">
+        </div>
+
+        <section id="arsip-materi">
+            <div class="content-wrapper">
+                <h2 class="section-title">Arsip Materi Live Class</h2>
+            </div>
+            <div class="card-grid">
+                <a href="https://drive.google.com/file/d/1PNpr_13vURhO54pNXQ-OZiU3l1KD55R0/view?usp=drive_link" target="_blank" class="card-link">
+                    <div class="card">
+                        <div class="card-thumbnail" style="background-image: url('Trigonometri Dasar.png');">
+                            <i class="fas fa-file-pdf"></i>
+                        </div>
+                        <div class="card-content">
+                            <h3 class="card-title">Trigonometri Dasar</h3>
+                            <p class="card-subtitle">File PDF berisi materi Trigonometri Dasar dari sesi live class.</p>
+
+                            <div class="card-meta">
+                                <span><i class="fas fa-calendar-days"></i> 19 Februari 2025</span>
+                                <span class="tag tag-materi">MATERI</span>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+                <a href="https://drive.google.com/file/d/19ctDkaL04PWQ0f_rgPGgvswJCkfcxI5j/view?usp=drive_link" target="_blank" class="card-link">
+                    <div class="card">
+                        <div class="card-thumbnail" style="background-image: url('Bentuk Aljabar.png');">
+                            <i class="fas fa-file-pdf"></i>
+                        </div>
+                        <div class="card-content">
+                            <h3 class="card-title">Bentuk Aljabar</h3>
+                            <p class="card-subtitle">File PDF berisi materi terkait bentuk aljabar dari sesi live class.</p>
+
+                            <div class="card-meta">
+                                <span><i class="fas fa-calendar-days"></i> 30 Desember 2024</span>
+                                <span class="tag tag-materi">MATERI</span>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+                <!-- <a href="#" target="_blank" class="card-link">
+                    <div class="card">
+                        <div class="card-thumbnail" style="background-image: url('https://images.unsplash.com/photo-1532012197267-da84d127e765?w=500&q=80');">
+                            <i class="fas fa-file-pdf"></i>
+                        </div>
+                        <div class="card-content">
+                            <h3 class="card-title">PDF Rangkuman Tryout UTBK #3</h3>
+                            <p class="card-subtitle">File PDF berisi rangkuman soal dan pembahasan dari sesi live class.</p>
+
+                            <div class="card-meta">
+                                <span><i class="fas fa-calendar-days"></i> 15 Juli 2025</span>
+                                <span class="tag tag-materi">MATERI</span>
+                            </div>
+                        </div>
+                    </div>
+                </a> -->
+            </div>
+        </section>
+        <footer>
+            <div class="footer-container">
+                <div class="footer-section">
+                    <h3>Tentang Kami</h3>
+                    <ul>
+                        <li><a href="https://www.umt6174.site/tentang-umt" target="_blank">Tentang UMT</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Produk UMT</h3>
+                    <ul>
+                        <li><a href="https://www.umt6174.site/umt-lab" target="_blank">UMT Lab</a></li>
+                        <li><a href="https://www.umt6174.site/materi-belajar" target="_blank">Materi Pembelajaran</a></li>
+                        <li><a href="https://www.umt6174.site/video-pembelajaran" target="_blank">Video Pembelajaran</a></li>
+                        <li><a href="https://www.umt6174.site/tryout-umt" target="_blank">Tryout</a></li>
+                        <li><a href="https://www.umt6174.site/tanya-umt" target="_blank">TanyaUMT</a></li>
+                        <li><a href="https://www.umt6174.site/bank-soal" target="_blank">Bank Soal</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Punya Pertanyaan?</h3>
+                    <ul class="contact-list">
+                        <li><a href="https://ig.me/m/umt.6174"><img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" alt="Instagram" target="_blank">@umt.6174</a></li>
+                        <li><a href="mailto:business@gradient.academy"><img src="https://cdn-icons-png.flaticon.com/512/732/732200.png" alt="Email" target="_blank"> umt.math.6174@gmail.com</a></li>
+                        <li><a href="https://wa.me/6282189524610"><img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" alt="WhatsApp" target="_blank"> +6282189524610</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2025 UMT Academy. All rights reserved.</p>
+                <div class="social-icons">
+                    <a href="https://youtube.com/@umt6174?si=Cdivet0_By8EWJ8v"><img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png" alt="YouTube" target="_blank"></a>
+                    <a href="https://www.instagram.com/umt.6174/"><img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" alt="Instagram" target="_blank"></a>
+                    <a href="https://www.tiktok.com/@umt6174?is_from_webapp=1&sender_device=pc"><img src="https://cdn-icons-png.flaticon.com/512/3046/3046126.png" alt="TikTok" target="_blank"></a>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Ambil elemen yang dibutuhkan dari DOM
+            const searchInput = document.getElementById('search-input');
+            const sections = document.querySelectorAll('section[id^="arsip-"]');
+            const noResultsMessage = document.getElementById('no-results');
+            const divider = document.querySelector('.section-divider');
+
+            // Tambahkan event listener ke kotak pencarian
+            searchInput.addEventListener('input', function() {
+                const searchTerm = searchInput.value.toLowerCase().trim();
+                let totalVisibleCards = 0;
+
+                // Loop setiap section (video dan materi)
+                sections.forEach(section => {
+                    const cards = section.querySelectorAll('.card-link');
+                    const sectionTitle = section.querySelector('.section-title');
+                    let visibleCardsInSection = 0;
+
+                    // Loop setiap kartu di dalam section
+                    cards.forEach(card => {
+                        const title = card.querySelector('.card-title').textContent.toLowerCase();
+                        const subtitle = card.querySelector('.card-subtitle').textContent.toLowerCase();
+
+                        // Cek apakah judul atau subjudul cocok dengan kata kunci
+                        if (title.includes(searchTerm) || subtitle.includes(searchTerm)) {
+                            card.style.display = 'block'; // Tampilkan kartu
+                            visibleCardsInSection++;
+                        } else {
+                            card.style.display = 'none'; // Sembunyikan kartu
+                        }
+                    });
+
+                    // Tampilkan atau sembunyikan judul section
+                    if (sectionTitle) {
+                        sectionTitle.style.display = visibleCardsInSection > 0 ? 'block' : 'none';
+                    }
+                    
+                    totalVisibleCards += visibleCardsInSection;
+                });
+
+                // Tampilkan atau sembunyikan pesan "Tidak Ditemukan"
+                if (totalVisibleCards === 0 && searchTerm !== '') {
+                    noResultsMessage.style.display = 'flex';
+                } else {
+                    noResultsMessage.style.display = 'none';
+                }
+
+                // Cek visibilitas materi untuk menyembunyikan garis pemisah
+                const materialSection = document.getElementById('arsip-materi');
+                const visibleInMaterial = materialSection.querySelectorAll('.card-link[style*="display: block"]').length;
+                if (divider) {
+                    divider.style.display = visibleInMaterial > 0 && totalVisibleCards > visibleInMaterial ? 'block' : 'none';
+                }
+            });
+        });
+        const dropdown = document.getElementById('umtDropdown');
+    const dropdownToggle = dropdown.querySelector('.dropdown-toggle');
+    
+    dropdownToggle.addEventListener('click', function(e) {
+        e.stopPropagation();
+        dropdown.classList.toggle('active');
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!dropdown.contains(e.target)) {
+            dropdown.classList.remove('active');
+        }
+    });
+
+    // Close dropdown when pressing Escape
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            dropdown.classList.remove('active');
+        }
+    });
+    </script>
+
+</body>
+</html>
